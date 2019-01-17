@@ -1,0 +1,26 @@
+{% extends 'common/base.html' %}
+
+{% block title %}
+    Signup | Dogfight
+{% endblock title %}
+
+{% block body %}
+   <div class="container justify-content-center w-75 mt-5">
+            <div class="card">
+                <div class="card-header text-centered">
+                    <b>Welcome to the Dogfight at The Woodlands</b><br />
+                    <small>Sign up to play</small>
+                </div>
+
+                <div class="card-body">
+                    <form action="" method="post" novalidate>
+                        {% csrf_token %}
+                        {% include 'common/form.html' %}
+                        <button type="submit" class="btn btn-primary">Create an Account</button>
+                    </form>
+                </div>
+            </div>
+   </div>
+
+{% endblock body %}
+

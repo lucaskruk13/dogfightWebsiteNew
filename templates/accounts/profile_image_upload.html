@@ -1,0 +1,18 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+    <div class="card col-lg-8 col-md-8 col-sm-8">
+        <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Upload</button>
+            </form>
+
+            <p><a href="{% url 'feed' %}">Return to home</a></p>
+        </div>
+    </div>
+
+
+
+{% endblock content %}

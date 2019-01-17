@@ -1,0 +1,165 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}
+    Dogfight | Feed
+{% endblock title %}
+
+{% block base_stylesheet %}
+    {% if dogfight.course.img %}
+        <link rel="stylesheet" href="{% static 'css/base-parallax.css' %}" type="text/css">
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/base-no-parallax.css' %}" type="text/css">
+    {% endif %}
+{% endblock base_stylesheet%}
+
+{% block content %}
+
+    {% if dogfight %}
+
+        {% if dogfight.course.img %}
+            <div class="parallax-window" data-parallax="scroll" data-image-src="{% static dogfight.course.img %}"></div>
+        {% endif %}
+
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="container-fluid col-md-10 col-lg-10 col-sm-10" >
+            <div class="container text-center" style="padding-bottom: 20px;">
+                <h3>{{ dogfight.formal_text|safe }}</h3>
+                {% if not scores_list %}
+                    <h5 style="color: red;">No Players Currently Signed Up</h5>
+                {% endif %}
+
+                {% if user.is_authenticated %} {# Only Show the Signup Button if Signed In #}
+
+                    {% if not signed_up %}
+                        <a href="{% url 'dogfight_signup' dogfight.pk user.pk %}" id="dogfight-signup-button">
+                            <button class="btn btn-primary col-lg-12 col-md-12 col-sm-12">Sign Up</button>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'cancel_dogfight_signup' dogfight.pk user.pk %}" id="dogfight-signup-cancel-button">
+                            <button class="btn btn-primary col-lg-12 col-md-12 col-sm-12">Cancel Sign Up</button>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            {% if prize_money_dict %}
+
+                <div class="card" id="prize-money-card">
+                    <div class="card-header text-center"><strong>Prize Money</strong></div>
+                    <div class="card-body">
+                        <table class="table text-center" align="center">
+                            <thead>
+                                {% for key, value in prize_money_dict.items %}
+                                    <th scope="col">{{ key|ordinal }}</th>
+                                {% endfor %}
+                            </thead>
+
+                                <tr class="{% if prize_money_dict|length > 1 %}prize-money-availible{% else %}prize-money-unavailible{% endif %}">
+                                    {% for key, value in prize_money_dict.items %}
+                                        <td>{% if prize_money_dict|length > 1 %}${% endif %}{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                        </table>
+                    </div>
+                </div>
+
+            {% endif %}
+
+            {% if scores_list %}
+                <div class="card" id="feed-table-container">
+                    <div class="card-header text-center">
+                        <strong>Currently Signed Up</strong>
+                    </div>
+                    <div class="card-body">
+                        <table class="table text-center table-striped table-borderless" id="feed-table">
+                            <thead>
+                                <th scope="col">Golfer</th>
+                                <th scope="col">Quota</th>
+                                <th scope="col">Precise Quota</th>
+                                <th scope="col">Sign Up Time</th>
+                            </thead>
+
+                            <tbody>
+                            {# Wrap the TR in a link to the user  #}
+                                {% for score in scores_list %}
+                                    <tr {% if user == score.user %} style="background-color: yellow;" {% endif %} id="signed-up-row">
+
+                                        <td><a href="{% url 'profile' score.user.pk %}">{{ score.user.profile.fullname }}</a></td>
+                                        <td>{{ score.user.profile.getRoundedQuota }}</td>
+                                        <td>{{ score.user.profile.getCurrentQuota }}</td>
+                                        <td>{{ score.created_at }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if waiting_list %}
+                <div class="card" id="waiting-list-table-card">
+                    <div class="card-header text-center">
+                        <strong>Waiting List</strong>
+                    </div>
+                    <div class="card-body">
+                        <table class="table text-center table-striped table-borderless" id="feed-table">
+                            <thead>
+                                <th scope="col">Golfer</th>
+                                <th scope="col">Quota</th>
+                                <th scope="col">Precise Quota</th>
+
+                            </thead>
+
+                            <tbody>
+                            {# Wrap the TR in a link to the user  #}
+                                {% for score in waiting_list %}
+                                    <tr {% if user == score.user %} style="background-color: yellow;" {% endif %} id="waiting-list-row">
+
+                                        <td><a href="{% url 'profile' score.user.pk %}">{{ score.user.profile.fullname }}</a></td>
+                                        <td>{{ score.user.profile.getRoundedQuota }}</td>
+                                        <td>{{ score.user.profile.getCurrentQuota }}</td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+    {% else %}
+
+        {# There is No Dogfight for the week #}
+        <div class="container col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    No Dogfight This Week
+                </div>
+
+                <div class="card-body">
+                    There is currently. This could be due to an MGA Tournament, or weather related issues.
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
+
+{% endblock content %}
+
+{% block additional_javascript %}
+<script src="{% static 'js/parallax.js-1.5.0/parallax.js' %}"></script>
+{% endblock additional_javascript %}

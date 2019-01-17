@@ -1,0 +1,27 @@
+{% extends 'common/base.html' %}
+
+{% block title %}
+    My Account | Dogfight
+{% endblock title %}
+
+
+{% block content %}
+   <div class="container justify-content-center w-75 mt-5">
+            <div class="card">
+                <div class="card-header text-centered">
+                    <b>Tell other about you</b><br />
+
+                </div>
+
+                <div class="card-body">
+                    <form action="" method="post" novalidate>
+                        {% csrf_token %}
+                        {% include 'common/form.html' %}
+                        <button type="submit" class="btn btn-primary">Create an Account</button>
+                    </form>
+                </div>
+            </div>
+   </div>
+
+
+{% endblock content %}

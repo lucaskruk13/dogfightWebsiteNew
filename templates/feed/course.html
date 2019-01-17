@@ -1,0 +1,17 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="fill" style="height: 200vm;">
+        <img src="{% static course.img %}" alt="">
+    </div>
+
+    <div class="container-fluid text-center" style="border-bottom: 1px solid black; height: 100px; background-color: white;">
+
+        <div class="container" style="font-size: 200%;"><b>{{ course.name }}</b></div>
+        <div class="container" >{{ course.yardage }}</div>
+    </div>
+
+    <div class="container" style="margin-top: 50px;">
+        {{ course.description }}
+    </div>
+{% endblock %}
